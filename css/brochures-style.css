@@ -1,0 +1,27 @@
+.brochure-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.brochure-item {
+    flex: 1 1 calc(33.333% - 20px);
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.brochure-item img.brochure-cover {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.brochure-item h3.brochure-headline {
+    font-size: 1.2em;
+    margin: 10px 0 0;
+}

@@ -189,8 +189,11 @@ function display_brochure_data_page() {
         <?php if (!empty($posts)) : ?>
             <?php foreach ($posts as $post) : ?>
                 <h2><?php echo esc_html($post->post_title); ?></h2>
-
+                
                 <?php
+                $image_url = wp_get_attachment_image_url( get_post_meta($post->ID, 'slider_image_portrait', true) );
+
+                print_r($image_url);
                 // Retrieve custom fields
                 $brochure_file = get_post_meta($post->ID, 'brochure_file', true);
                 $slider_images = get_post_meta($post->ID, 'slider_image', true);
@@ -227,6 +230,59 @@ function display_brochure_data_page() {
 }
 
 
+function display_brochure_shortcode() {
+    // Get all posts of the 'brochure' post type
+    $args = array(
+        'post_type' => 'brochure',
+        'posts_per_page' => -1 // Get all posts
+    );
+    $posts = get_posts($args);
+
+    // Start the output buffer
+    ob_start();
+
+    if (!empty($posts)) {
+        echo '<div class="brochure-grid">';
+        foreach ($posts as $post) {
+            // Retrieve custom fields
+            $cover_image_id = get_post_meta($post->ID, 'cover_image', true);
+            $home_headline = get_post_meta($post->ID, 'headline', true);
+
+            // Get the URL of the cover image using the attachment ID
+            $cover_image_url = wp_get_attachment_image_url($cover_image_id, 'medium');
+
+            // Output the brochure content
+            echo '<div class="brochure-item">';
+            if ($cover_image_url) {
+                echo '<img src="' . esc_url($cover_image_url) . '" alt="' . esc_attr($post->post_title) . '" class="brochure-cover">';
+            }
+            echo '<h3 class="brochure-headline">' . esc_html($home_headline) . '</h3>';
+            echo '</div>';
+        }
+        echo '</div>';
+    } else {
+        echo '<p>No brochures found.</p>';
+    }
+
+    // Get the content from the output buffer
+    $output = ob_get_clean();
+
+    // Return the output
+    return $output;
+}
+add_shortcode("display_brochures", "display_brochure_shortcode");
+
+
+function enqueue_brochure_styles() {
+    // Define the path to the CSS file
+    wp_enqueue_style(
+        'brochures-style', 
+        plugin_dir_url(__FILE__) . 'css/brochures-style.css', 
+        array(), 
+        '1.0.0' 
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_brochure_styles');
 
 
 
